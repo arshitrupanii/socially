@@ -5,6 +5,5 @@ export default function Home() {
     <div className="m-4">
       <p>home page</p>
     </div>
-
   );
 }
