@@ -43,7 +43,7 @@ model User {
 
 model Post{
   id String @id @default(cuid())
-  autherId String
+  authorId String
   content String?
   image String?
   createdAt DateTime @default(now())
@@ -51,7 +51,7 @@ model Post{
 
 
   // Relations
-  author User @relation(fields: [autherId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
   // cascade delete all post when author will deleted
   comments Comment[]
   likes Like[]
@@ -62,16 +62,16 @@ model Post{
 model Comment{
   id String @id @default(cuid())
   content String
-  autherId String
+  authorId String
   postId String
   createdAt DateTime @default(now())
 
   // relations
-  author User @relation(fields: [autherId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
   notifications Notification[]
 
-  @@index([autherId,postId])
+  @@index([authorId,postId])
 }
 
 model Like{

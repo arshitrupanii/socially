@@ -13,8 +13,8 @@ export async function SyncUser() {
 
         const existingUser = await prisma.user.findUnique({
             where:{
-                clerkId : userId
-            }
+                clerkId : userId,
+            },
         })
 
         if(existingUser) return existingUser;
@@ -34,4 +34,38 @@ export async function SyncUser() {
     } catch (error) {
         console.log("error in sync user : " , error)
     }
+}
+
+export async function Getuser(clerkId : string) {
+    try {
+        return prisma.user.findUnique({
+            where:{
+                clerkId
+            },
+            include:{
+                _count:{
+                    select:{
+                        followers:true,
+                        following:true,
+                        post:true
+                    }
+                }
+            }
+        })
+
+    } catch (error) {
+        console.log("error in get user : ",error);
+    }
+}
+
+export async function getDbUser() {
+    const {userId:clerkId} = await auth();
+    if(!clerkId) throw new Error("unauthorized")
+
+    const user = await Getuser(clerkId);
+
+    if(!user) throw new Error("user is not found!");
+
+    return user;
+    
 }
