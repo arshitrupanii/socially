@@ -65,7 +65,8 @@ export async function getDbUser() {
     const user = await Getuser(clerkId);
 
     if(!user) throw new Error("user is not found!");
-
+    console.log(user);
     return user;
+
     
 }
