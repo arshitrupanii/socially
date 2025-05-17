@@ -1,6 +1,8 @@
 import CreatePost from "@/components/createPost";
 import { currentUser } from "@clerk/nextjs/server";
-import Image from "next/image";
+import WhotoFollow from "@/components/WhotoFollow";
+import { Toaster } from "react-hot-toast";
+import { useEffect } from "react";
 
 export default async function Home() {
 
@@ -12,8 +14,9 @@ export default async function Home() {
         {user ? <CreatePost /> : null}
       </div>
       <div className="hidden lg:col-span-4 lg:block sticky top-20">
-          whotoFollow
+        <WhotoFollow />
       </div>
+      <Toaster/>
     </div>
   );
 }

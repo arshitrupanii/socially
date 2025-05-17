@@ -9,11 +9,10 @@ export async function createPost(content:string, imageUrl:string) {
 
     try {
         const userId =  await getDbUser();
-        console.log(userId)
 
         const post = await prisma.post.create({
             data:{
-                authorId : userId.clerkId,
+                authorId : userId,
                 content : content,
                 image : imageUrl
             }
@@ -24,6 +23,7 @@ export async function createPost(content:string, imageUrl:string) {
 
     } catch (error) {
         console.log("error in post action : ", error);
+        return {success : false, message: "Error in posting.."}
     }
 
 }
