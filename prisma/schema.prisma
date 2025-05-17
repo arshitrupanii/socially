@@ -29,12 +29,12 @@ model User {
 
 
   // Relations
-  post Post[]
+  posts Post[]
   comments Comment[]
   likes Like[]
 
-  followers follows[] @relation("following")
-  following follows[] @relation("follower")
+  followers Follows[] @relation("following")
+  following Follows[] @relation("follower")
 
   notifications Notification[] @relation("userNotifications")
   notificationsCreated Notification[] @relation("notificationCreator")
@@ -75,7 +75,7 @@ model Comment{
 }
 
 model Like{
-  id String @id @default(uuid())
+  id String @id @default(cuid())
   postId String
   userId String
   createdAt DateTime @default(now())
@@ -90,7 +90,7 @@ model Like{
 
 }
 
-model follows{
+model Follows{
   followerId String
   followingId String
   createdAt DateTime @default(now())
@@ -105,7 +105,7 @@ model follows{
 }
 
 model Notification{
-  id String @id @default(uuid())
+  id String @id @default(cuid())
   userId String
   creatorId String
   type Notificationtype

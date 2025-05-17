@@ -47,7 +47,7 @@ export async function Getuser(clerkId : string) {
                     select:{
                         followers:true,
                         following:true,
-                        post:true
+                        posts:true
                     }
                 }
             }
