@@ -118,6 +118,7 @@ export async function toggleFollow(targetId: String) {
 
     try {
         const userId = await getDbUser();
+        if(!userId) return;
 
         if (targetId === userId) throw new Error("you can't follow yourself..")
 

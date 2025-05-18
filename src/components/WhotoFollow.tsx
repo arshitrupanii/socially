@@ -6,6 +6,7 @@ import { Avatar, AvatarImage } from '@radix-ui/react-avatar';
 import Link from 'next/link';
 import FollowButton from './FollowButton';
 
+
 const WhotoFollow = async () => {
     const users = await getRandomUser();
 
