@@ -13,7 +13,6 @@ export default async function Home() {
   const posts = await getPost();
   const dbUserId = await getDbUser();
 
-  console.log({posts});
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
@@ -21,7 +20,9 @@ export default async function Home() {
         {user ? <CreatePost /> : null}
 
         <div className="space-y-6">
-        
+          {posts?.map((post) => (
+            <PostCard key={post.id} post={post} dbUserId={dbUserId} />
+          ))}
         </div>
 
       </div>

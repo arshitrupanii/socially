@@ -84,5 +84,22 @@ export async function getPost() {
     } catch (e) {
         console.log("error in get posts : ", error);
     }
+}
 
+
+export async function createComment() {
+    
+}
+
+
+export async function deletePost() {
+    
+}
+
+export async function getPosts() {
+    
+}
+
+export async function toggleLike() {
+    
 }
