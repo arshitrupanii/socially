@@ -5,7 +5,9 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme-providor";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
-import { Toaster } from "react-hot-toast";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "@/api/uploadthing/core";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -38,6 +40,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <NextSSRPlugin
+             routerConfig={extractRouterConfig(ourFileRouter)}
+            />
             <div className="min-h-screen">
               <Navbar />
 

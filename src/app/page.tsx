@@ -7,6 +7,7 @@ import { getPosts } from "@/actions/post.action";
 import PostCard from "@/components/Postcard";
 import { getDbUser } from "@/actions/user.action";
 
+
 export default async function Home() {
 
   const user = await currentUser();

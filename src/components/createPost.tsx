@@ -56,11 +56,11 @@ function CreatePost() {
               disabled={isPosting}
             />
           </div>
-{/* 
+
           {(showImageUpload || imageUrl) && (
             <div className="border rounded-lg p-4">
               <ImageUpload
-                endpoint="postImage"
+                endpoint="imageUploader"
                 value={imageUrl}
                 onChange={(url) => {
                   setImageUrl(url);
@@ -68,7 +68,7 @@ function CreatePost() {
                 }}
               />
             </div>
-          )} */}
+          )}
 
           <div className="flex items-center justify-between border-t pt-4">
             <div className="flex space-x-2">
