@@ -68,8 +68,6 @@ export async function getDbUser() {
 
     if (!user) throw new Error("user is not found!");
     return user.id;
-
-
 }
 
 

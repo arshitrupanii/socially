@@ -2,15 +2,14 @@ import CreatePost from "@/components/createPost";
 import { currentUser } from "@clerk/nextjs/server";
 import WhotoFollow from "@/components/WhotoFollow";
 import { Toaster } from "react-hot-toast";
-import { useEffect } from "react";
-import { getPost } from "@/actions/post.action";
+import { getPosts } from "@/actions/post.action";
 import PostCard from "@/components/Postcard";
 import { getDbUser } from "@/actions/user.action";
 
 export default async function Home() {
 
   const user = await currentUser();
-  const posts = await getPost();
+  const posts = await getPosts();   
   const dbUserId = await getDbUser();
 
 

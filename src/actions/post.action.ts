@@ -3,7 +3,6 @@
 import prisma from "@/lib/prisma";
 import { getDbUser } from "./user.action";
 import { revalidatePath } from "next/cache";
-import { error } from "console";
 
 
 export async function createPost(content: string, imageUrl: string) {
@@ -31,7 +30,7 @@ export async function createPost(content: string, imageUrl: string) {
 }
 
 
-export async function getPost() {
+export async function getPosts() {
 
     try {
 
@@ -82,24 +81,146 @@ export async function getPost() {
         return posts;
 
     } catch (e) {
-        console.log("error in get posts : ", error);
+        console.log("error in get posts : ", e);
     }
 }
 
 
-export async function createComment() {
-    
+export async function createComment(postId: string, content: string) {
+    try {
+        const userid = await getDbUser();
+
+        if (!userid) return;
+        if (!content) return;
+
+        const post = await prisma.post.findUnique({
+            where: { id: postId },
+            select: { authorId: true }
+        })
+
+        if (!post) throw new Error("post not found!!!")
+
+        const [comment] = await prisma.$transaction(async (tx) => {
+            // create comment first
+            const newComment = await tx.comment.create({
+                data: {
+                    content,
+                    authorId: userid,
+                    postId: postId
+                }
+            })
+
+            if (post.authorId !== userid) {
+                await tx.notification.create({
+                    data: {
+                        type: "COMMENT",
+                        userId: post.authorId,
+                        creatorId: userid,
+                        postId: postId,
+                        commentId: newComment.id
+                    }
+                })
+            }
+
+            return [newComment];
+        })
+
+        revalidatePath(`/posts/${postId}`);
+        return { success: true, comment }
+
+    } catch (error) {
+        console.log("Failed to create new comment ", error)
+        return { success: false, error: "failed to create new comment!" }
+    }
 }
 
 
-export async function deletePost() {
-    
+export async function deletePost(postId: string) {
+    try {
+        const userid = await getDbUser();
+
+        const post = await prisma.post.findUnique({
+            where: { id: postId },
+            select: { authorId: true }
+        })
+
+        if (!post) throw new Error("post not found")
+        if (post.authorId != userid) throw new Error("You are unauthorized user!!")
+
+        await prisma.post.delete({
+            where: { id: postId }
+        })
+
+        revalidatePath("/");
+        return { success: true }
+    }
+    catch (error) {
+        console.log("Failed to delete post ", error)
+        return { success: false, error: "failed to delete post!" }
+    }
 }
 
-export async function getPosts() {
-    
-}
+export async function toggleLike(postId: string) {
+    try {
+        const userId = await getDbUser();
+        if (!userId) return;
 
-export async function toggleLike() {
-    
+        // check if like exists
+        const existingLike = await prisma.like.findUnique({
+            where: {
+                userId_postId: {
+                    userId,
+                    postId,
+                },
+            },
+        });
+
+        const post = await prisma.post.findUnique({
+            where: { id: postId },
+            select: { authorId: true },
+        });
+
+
+        if (!post) throw new Error("Post not found");
+
+        if (existingLike) {
+            // unlike
+            await prisma.like.delete({
+                where: {
+                    userId_postId: {
+                        userId,
+                        postId,
+                    },
+                },
+            });
+        } else {
+            // like and create notification (only if liking someone else's post)
+            await prisma.$transaction([
+                prisma.like.create({
+                    data: {
+                        userId,
+                        postId,
+                    },
+                }),
+                ...(post.authorId !== userId
+                    ? [
+                        prisma.notification.create({
+                            data: {
+                                type: "LIKE",
+                                userId: post.authorId, // recipient (post author)
+                                creatorId: userId, // person who liked
+                                postId,
+                            },
+                        }),
+                    ]
+                    : []),
+            ]);
+        }
+        revalidatePath("/");
+        return { success: true };
+
+    } catch (error) {
+        console.error("Failed to toggle like:", error);
+        return { success: false, error: "Failed to toggle like" };
+    }
 }
