@@ -62,7 +62,7 @@ export async function Getuser(clerkId: string) {
 
 export async function getDbUser() {
     const { userId: clerkId } = await auth();
-    if (!clerkId) throw new Error("unauthorized")
+    if (!clerkId)  return null;
 
     const user = await Getuser(clerkId);
 
@@ -71,9 +71,11 @@ export async function getDbUser() {
 }
 
 
+
 export async function getRandomUser() {
     try {
         const userId = await getDbUser();
+        if(!userId) return [];
 
         const randomUser = await prisma.user.findMany({
             where: {

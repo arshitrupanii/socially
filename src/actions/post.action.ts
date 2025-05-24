@@ -34,9 +34,6 @@ export async function getPosts() {
 
     try {
 
-        const userId = await getDbUser();
-        if (!userId) return;
-
         const posts = await prisma.post.findMany({
             orderBy: {
                 createdAt: "desc"
@@ -44,6 +41,7 @@ export async function getPosts() {
             include: {
                 author: {
                     select: {
+                        id : true,
                         name: true,
                         image: true,
                         username: true
@@ -82,6 +80,8 @@ export async function getPosts() {
 
     } catch (e) {
         console.log("error in get posts : ", e);
+        throw new Error("Failed to fetch posts");
+
     }
 }
 
